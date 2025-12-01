@@ -29,9 +29,9 @@ class MapView:
         self.dynamic_frame_container.grid(row=1, column=0, columnspan=1, sticky='nsew')
 
         self.school_frame = self.create_school_frame(self.dynamic_frame_container)
-        self.class_frame = self.create_class_management_frame(self.dynamic_frame_container)
-        self.employee_frame = self.create_employee_management_frame(self.dynamic_frame_container)
-        self.student_frame = self.create_student_management_frame(self.dynamic_frame_container)
+        self.class_frame = self.create_class_frame(self.dynamic_frame_container)
+        self.employee_frame = self.create_employee_frame(self.dynamic_frame_container)
+        self.student_frame = self.create_student_frame(self.dynamic_frame_container)
 
 
     def create_combobox(self, parent):

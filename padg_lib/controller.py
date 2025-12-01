@@ -1,6 +1,6 @@
 from tkinter import *
 from padg_lib.view import MapView
-from padg_lib.model import School, Class, Employee, Student, schools, classes, employees, students
+from padg_lib.model import School, Class, Employee, Student, schools, classes, employees, students, get_coordinates
 import tkintermapview
 
 
@@ -18,6 +18,7 @@ class MapController:
 
         self.view.button_add_school.config(command=lambda: self.add_school())
         self.view.button_delete_school.config(command=lambda: self.delete_school())
+        self.view.button_edit_school.config(command=lambda: self.edit_school())
 
     def draw_markers(self):
         for obj, marker_instance in self.markers.items():
@@ -46,12 +47,12 @@ class MapController:
         self.view.entry_school_city.delete(0, END)
         self.view.entry_school_street.delete(0, END)
         self.draw_markers()
-
+        print (self.markers)
 
     def delete_school(self):
-        i = self.view.listbox_schools.curselection()[0]
-        self.schools_data[i].marker.delete()
-        self.school_info().pop(i)
+        i = self.view.listbox_schools.index(ACTIVE)
+        self.markers[i].delete() #TODO bugfix tego
+        self.schools_data.pop(i)
         self.school_info()
     #
     #
@@ -67,44 +68,43 @@ class MapController:
     #         self.view.map_widget.set_zoom(14)
     #
     #
-    # def edit_user(self):
-    #         i = self.view.listbox_lista_obiektow.curselection()[0]
-    #         user = self.users_data[i]
-    #
-    #         self.view.entry_name.delete(0, END)
-    #         self.view.entry_lokalizacja.delete(0, END)
-    #         self.view.entry_posty.delete(0, END)
-    #         self.view.entry_imgurl.delete(0, END)
-    #
-    #         self.view.entry_name.insert(0, user.name)
-    #         self.view.entry_lokalizacja.insert(0, user.location)
-    #         self.view.entry_posty.insert(0, user.posts)
-    #         self.view.entry_imgurl.insert(0, user.img_url)
-    #
-    #         self.view.button_dodaj_obiekt.config(
-    #             text="Zapisz zmiany",
-    #             command=lambda: self.update_user(i)
-    #         )
+    def edit_school(self):
+            i = self.view.listbox_schools.curselection()[0]
+            school = self.schools_data[i]
+            self.view.entry_school_name.delete(0, END)
+            self.view.entry_school_city.delete(0, END)
+            self.view.entry_school_street.delete(0, END)
+            self.view.entry_school_name.insert(0, school.name)
+            self.view.entry_school_city.insert(0, school.city)
+            self.view.entry_school_street.insert(0, school.street)
+            self.view.button_add_school.config(
+                text="Zapisz zmiany",
+                command=lambda: self.update_user(i)
+            )
     #
     #
-    # def update_user(self, i):
-    #     user = self.users_data[i]
-    #
-    #     user.name = self.view.entry_name.get()
-    #     user.location = self.view.entry_lokalizacja.get()
-    #     user.posts = int(self.view.entry_posty.get())
-    #     user.img_url = self.view.entry_imgurl.get()
-    #
-    #     user.coords = user.get_coordinates()
-    #     user.marker.set_position(user.coords[0], user.coords[1])
-    #     user.marker.set_text(user.name)
-    #
-    #     self.view.entry_lokalizacja.delete(0, END)
-    #     self.view.entry_posty.delete(0, END)
-    #     self.view.entry_imgurl.delete(0, END)
-    #     self.view.button_dodaj_obiekt.config(
-    #         text="Dodaj obiekt",
-    #         command=lambda: self.add_user()
-    #     )
+    def update_user(self, i):
+        school = self.schools_data[i]
+
+        school.name = self.view.entry_school_name.get()
+        school.city = self.view.entry_school_city.get()
+        school.street = self.view.entry_school_street.get()
+        address: str = f"{school.city}, {school.street}"
+        school.coords = get_coordinates(address)
+
+        marker = self.markers[school]
+        marker.set_position(school.coords[0], school.coords[1])
+        marker.set_text(school.name)
+
+
+        self.view.entry_school_name.delete(0, END)
+        self.view.entry_school_city.delete(0, END)
+        self.view.entry_school_street.delete(0, END)
+
+        self.school_info()
+        self.view.button_add_school.config(
+            text="Dodaj obiekt",
+            command=lambda: self.add_school()
+        )
 
 
