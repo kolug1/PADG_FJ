@@ -1,4 +1,5 @@
 from tkinter import *
+import tkinter.ttk as ttk
 import tkintermapview
 
 class MapView:
@@ -7,73 +8,121 @@ class MapView:
         self.root.geometry("1025x760")
         self.root.title("System zarządzania szkołami")
 
-        self.ramka_lista_obiektow = Frame(root)
-        self.ramka_formularz = Frame(root)
-        self.ramka_szczegolow_obiektu = Frame(root)
+        self.ramka_zarzadania = Frame(root)
         self.ramka_mapa = Frame(root)
 
-        self.ramka_lista_obiektow.grid(row=0, column=0)
-        self.ramka_formularz.grid(row=0, column=1)
-        self.ramka_szczegolow_obiektu.grid(row=1, column=0, columnspan=2)
-        self.ramka_mapa.grid(row=2, column=0, columnspan=2)
+        self.ramka_zarzadania.grid(row=0, column=0, sticky=N)
+        self.ramka_mapa.grid(row=1, column=0)
 
-        self.create_lista_obiektow_frame()
-        self.create_formularz_frame()
-        self.create_szczegoly_obiektu_frame()
+        self.create_zarzadzanie_frame(self.ramka_zarzadania)
         self.create_map_frame()
 
-    def create_lista_obiektow_frame(self):
-        Label(self.ramka_lista_obiektow, text="Lista obiektów").grid(row=0, column=0, columnspan=3)
+        self.hide_dynamic_frames()
+        self.show_frame("Szkoły")
 
-        self.listbox_lista_obiektow = Listbox(self.ramka_lista_obiektow, width=35)
-        self.listbox_lista_obiektow.grid(row=1, column=0, columnspan=3)
+    def create_zarzadzanie_frame(self, parent):
 
-        self.button_pokaz_szczegoly = Button(self.ramka_lista_obiektow, text="Pokaż szczegóły")
-        self.button_pokaz_szczegoly.grid(row=2, column=0)
 
-        self.button_usun_obiekt = Button(self.ramka_lista_obiektow, text="Usuń obiekt")
-        self.button_usun_obiekt.grid(row=2, column=1)
+        self.create_combobox(parent)
 
-        self.button_edytuj_obiekt = Button(self.ramka_lista_obiektow, text="Edytuj obiekt")
-        self.button_edytuj_obiekt.grid(row=2, column=2)
+        self.dynamic_frame_container = Frame(parent)
+        self.dynamic_frame_container.grid(row=1, column=0, columnspan=1, sticky='nsew')
 
-    def create_formularz_frame(self):
-        Label(self.ramka_formularz, text="Formularz").grid(row=0, column=0, columnspan=2)
+        self.school_frame = self.create_school_frame(self.dynamic_frame_container)
+        self.class_frame = self.create_class_management_frame(self.dynamic_frame_container)
+        self.employee_frame = self.create_employee_management_frame(self.dynamic_frame_container)
+        self.student_frame = self.create_student_management_frame(self.dynamic_frame_container)
 
-        Label(self.ramka_formularz, text="Imię").grid(row=1, column=0, sticky=W)
-        Label(self.ramka_formularz, text="Lokalizacja").grid(row=2, column=0, sticky=W)
-        Label(self.ramka_formularz, text="Liczba postów").grid(row=3, column=0, sticky=W)
-        Label(self.ramka_formularz, text="Obrazek").grid(row=4, column=0, sticky=W)
 
-        self.entry_name = Entry(self.ramka_formularz)
-        self.entry_name.grid(row=1, column=1, sticky=W)
+    def create_combobox(self, parent):
 
-        self.entry_lokalizacja = Entry(self.ramka_formularz)
-        self.entry_lokalizacja.grid(row=2, column=1)
+        category_frame = Frame(parent)
+        category_frame.grid(row=0, column=0, sticky=W)
 
-        self.entry_posty = Entry(self.ramka_formularz)
-        self.entry_posty.grid(row=3, column=1)
+        Label(category_frame, text="Wybierz kategorię:").grid(row=0, column=0, sticky=W)
 
-        self.entry_imgurl = Entry(self.ramka_formularz)
-        self.entry_imgurl.grid(row=4, column=1)
+        self.kategoria_do_pracy = StringVar()
+        categories = ["Szkoły", "Klasy", "Pracownicy", "Uczniowie"]
 
-        self.button_dodaj_obiekt = Button(self.ramka_formularz, text="Dodaj obiekt")
-        self.button_dodaj_obiekt.grid(row=5, column=0, columnspan=2)
+        self.combobox_kategoria = ttk.Combobox(
+            category_frame,
+            textvariable=self.kategoria_do_pracy,
+            values=categories,
+            state="readonly"
+        )
+        self.combobox_kategoria.set(categories[0])
+        self.combobox_kategoria.grid(row=0, column=1)
 
-    def create_szczegoly_obiektu_frame(self):
-        Label(self.ramka_szczegolow_obiektu, text="Szczegóły obiektu").grid(row=0, column=0, sticky=W, columnspan=6)
 
-        Label(self.ramka_szczegolow_obiektu, text="Imię: ").grid(row=1, column=0)
-        self.label_imie_szczegoly_obiektu_wartosc = Label(self.ramka_szczegolow_obiektu, text="....")
-        self.label_imie_szczegoly_obiektu_wartosc.grid(row=1, column=1)
 
-        Label(self.ramka_szczegolow_obiektu, text="Lokalizacja: ").grid(row=1, column=2)
-        self.label_lokalizacja_szczegoly_obiektu_wartosc = Label(self.ramka_szczegolow_obiektu, text="....")
-        self.label_lokalizacja_szczegoly_obiektu_wartosc.grid(row=1, column=3)
+    def create_school_frame(self, parent):
+        frame = Frame(parent)
 
-        Label(self.ramka_szczegolow_obiektu, text="Posty: ").grid(row=1, column=4)
-        self.label_posty_szczegoly_obiektu_wartosc = Label(self.ramka_szczegolow_obiektu, text="....")
-        self.label_posty_szczegoly_obiektu_wartosc.grid(row=1, column=5)
+        Label(frame, text="LISTA SZKÓŁ").grid(row=0, column=0, sticky=W)
+        self.listbox_schools = Listbox(frame)
+        self.listbox_schools.grid(row=1, column=0)
+
+        self.button_delete_school = Button(frame, text="Usuń Szkołę")
+        self.button_delete_school.grid(row=5, column=0, sticky=W)
+
+        self.button_edit_school = Button(frame, text="Edytuj Szkołe")
+        self.button_edit_school.grid(row=5, column=1, sticky=W)
+
+        formularz = Frame(frame)
+        formularz.grid(row=1, column=1, sticky=N)
+        Label(formularz, text="Formularz Szkoły").grid(row=0, column=0, columnspan=2)
+
+        Label(formularz, text="Nazwa:").grid(row=1, column=0, sticky=W)
+        self.entry_school_name = Entry(formularz)
+        self.entry_school_name.grid(row=1, column=1)
+
+        Label(formularz, text="Miasto:").grid(row=2, column=0, sticky=W)
+        self.entry_school_city = Entry(formularz)
+        self.entry_school_city.grid(row=2, column=1)
+
+        Label(formularz, text="Adres:").grid(row=3, column=0, sticky=W)
+        self.entry_school_street = Entry(formularz)
+        self.entry_school_street.grid(row=3, column=1)
+
+        self.button_add_school = Button(formularz, text="Dodaj Szkołę")
+        self.button_add_school.grid(row=4, column=0, columnspan=2)
+
+        return frame
+
+    def create_class_frame(self, parent):
+        frame = Frame(parent)
+        Label(frame, text="ZARZĄDZANIE KLASAMI").grid(row=0, column=0, sticky=W)
+        #
+        return frame
+
+    def create_employee_frame(self, parent):
+        frame = Frame(parent)
+        Label(frame, text="ZARZĄDZANIE PRACOWNIKAMI").grid(row=0, column=0, sticky=W)
+        #
+        return frame
+
+    def create_student_frame(self, parent):
+        frame = Frame(parent)
+        Label(frame, text="ZARZĄDZANIE UCZNIAMI").grid(row=0, column=0, sticky=W)
+        #
+        return frame
+
+
+    def hide_dynamic_frames(self):
+        for frame in [self.school_frame, self.class_frame, self.employee_frame, self.student_frame]:
+            frame.pack_forget()
+
+    def show_frame(self, frame_name):
+        self.hide_dynamic_frames()
+        if frame_name == "Szkoły":
+            self.school_frame.pack(fill='both', expand=True)
+        elif frame_name == "Klasy":
+            self.class_frame.pack(fill='both', expand=True)
+        elif frame_name == "Pracownicy":
+            self.employee_frame.pack(fill='both', expand=True)
+        elif frame_name == "Uczniowie":
+            self.student_frame.pack(fill='both', expand=True)
+
 
     def create_map_frame(self):
         # RAMKA MAPY
