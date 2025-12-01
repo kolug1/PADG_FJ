@@ -53,6 +53,7 @@ class MapView:
         self.combobox_kategoria.set(categories[0])
         self.combobox_kategoria.grid(row=0, column=1)
 
+#TODO zrobić żeby combobox działał
 
 
     def create_school_frame(self, parent):
@@ -92,19 +93,19 @@ class MapView:
     def create_class_frame(self, parent):
         frame = Frame(parent)
         Label(frame, text="ZARZĄDZANIE KLASAMI").grid(row=0, column=0, sticky=W)
-        #
+        #TODO zrobić dla klas
         return frame
 
     def create_employee_frame(self, parent):
         frame = Frame(parent)
         Label(frame, text="ZARZĄDZANIE PRACOWNIKAMI").grid(row=0, column=0, sticky=W)
-        #
+        #TODO zrobić dla pracowników
         return frame
 
     def create_student_frame(self, parent):
         frame = Frame(parent)
         Label(frame, text="ZARZĄDZANIE UCZNIAMI").grid(row=0, column=0, sticky=W)
-        #
+        #TODO zrobić dla uczniów
         return frame
 
 

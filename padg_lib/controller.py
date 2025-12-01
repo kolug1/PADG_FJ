@@ -51,7 +51,7 @@ class MapController:
 
     def delete_school(self):
         i = self.view.listbox_schools.index(ACTIVE)
-        self.markers[i].delete() #TODO bugfix tego
+        self.markers[i].delete()
         self.schools_data.pop(i)
         self.school_info()
     #
@@ -89,8 +89,7 @@ class MapController:
         school.name = self.view.entry_school_name.get()
         school.city = self.view.entry_school_city.get()
         school.street = self.view.entry_school_street.get()
-        address: str = f"{school.city}, {school.street}"
-        school.coords = get_coordinates(address)
+        school.coords = get_coordinates(f"{school.city}, {school.street}")
 
         marker = self.markers[school]
         marker.set_position(school.coords[0], school.coords[1])
