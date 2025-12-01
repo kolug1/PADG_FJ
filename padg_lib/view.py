@@ -14,13 +14,13 @@ class MapView:
         self.ramka_zarzadania.grid(row=0, column=0, sticky=N)
         self.ramka_mapa.grid(row=1, column=0)
 
-        self.create_zarzadzanie_frame(self.ramka_zarzadania)
+        self.create_menage_frame(self.ramka_zarzadania)
         self.create_map_frame()
 
         self.hide_dynamic_frames()
         self.show_frame("Szkoły")
 
-    def create_zarzadzanie_frame(self, parent):
+    def create_menage_frame(self, parent):
 
 
         self.create_combobox(parent)
@@ -41,19 +41,18 @@ class MapView:
 
         Label(category_frame, text="Wybierz kategorię:").grid(row=0, column=0, sticky=W)
 
-        self.kategoria_do_pracy = StringVar()
+        self.selected_category = StringVar()
         categories = ["Szkoły", "Klasy", "Pracownicy", "Uczniowie"]
 
         self.combobox_kategoria = ttk.Combobox(
             category_frame,
-            textvariable=self.kategoria_do_pracy,
+            textvariable=self.selected_category,
             values=categories,
             state="readonly"
         )
         self.combobox_kategoria.set(categories[0])
         self.combobox_kategoria.grid(row=0, column=1)
 
-#TODO zrobić żeby combobox działał
 
 
     def create_school_frame(self, parent):
@@ -111,18 +110,18 @@ class MapView:
 
     def hide_dynamic_frames(self):
         for frame in [self.school_frame, self.class_frame, self.employee_frame, self.student_frame]:
-            frame.pack_forget()
+            frame.grid_forget()
 
     def show_frame(self, frame_name):
         self.hide_dynamic_frames()
         if frame_name == "Szkoły":
-            self.school_frame.pack(fill='both', expand=True)
+            self.school_frame.grid(row=0, column=0)
         elif frame_name == "Klasy":
-            self.class_frame.pack(fill='both', expand=True)
+            self.class_frame.grid(row=0, column=0)
         elif frame_name == "Pracownicy":
-            self.employee_frame.pack(fill='both', expand=True)
+            self.employee_frame.grid(row=0, column=0)
         elif frame_name == "Uczniowie":
-            self.student_frame.pack(fill='both', expand=True)
+            self.student_frame.grid(row=0, column=0)
 
 
     def create_map_frame(self):

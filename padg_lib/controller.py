@@ -9,6 +9,8 @@ class MapController:
         self.root = root
         self.view = view
 
+        self.view.combobox_kategoria.bind("<<ComboboxSelected>>", self.category_selection)
+
         self.schools_data:list = schools
         self.employees_data:list = employees
         self.students_data:list = students
@@ -19,6 +21,12 @@ class MapController:
         self.view.button_add_school.config(command=lambda: self.add_school())
         self.view.button_delete_school.config(command=lambda: self.delete_school())
         self.view.button_edit_school.config(command=lambda: self.edit_school())
+
+
+    def category_selection(self, event):
+        selected_category = self.view.selected_category.get()
+        self.view.show_frame(selected_category)
+
 
     def draw_markers(self):
         for obj, marker_instance in self.markers.items():
@@ -47,11 +55,11 @@ class MapController:
         self.view.entry_school_city.delete(0, END)
         self.view.entry_school_street.delete(0, END)
         self.draw_markers()
-        print (self.markers)
 
     def delete_school(self):
         i = self.view.listbox_schools.index(ACTIVE)
-        self.markers[i].delete()
+        school_delete = self.schools_data[i]
+        self.markers[school_delete].delete()
         self.schools_data.pop(i)
         self.school_info()
     #
@@ -79,11 +87,11 @@ class MapController:
             self.view.entry_school_street.insert(0, school.street)
             self.view.button_add_school.config(
                 text="Zapisz zmiany",
-                command=lambda: self.update_user(i)
+                command=lambda: self.update_school(i)
             )
     #
     #
-    def update_user(self, i):
+    def update_school(self, i):
         school = self.schools_data[i]
 
         school.name = self.view.entry_school_name.get()
