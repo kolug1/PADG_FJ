@@ -5,7 +5,7 @@ class MapView:
     def __init__(self, root: Tk):
         self.root = root
         self.root.geometry("1025x760")
-        self.root.title("MapBook")
+        self.root.title("System zarządzania szkołami")
 
         self.ramka_lista_obiektow = Frame(root)
         self.ramka_formularz = Frame(root)

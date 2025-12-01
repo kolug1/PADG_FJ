@@ -1,6 +1,6 @@
 from tkinter import *
 from padg_lib.view import MapView
-from padg_lib.model import User
+from padg_lib.model import School
 import tkintermapview
 
 

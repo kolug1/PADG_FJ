@@ -1,25 +1,47 @@
 
 import tkintermapview
 
-users: list = []
+def _build_headers(self, provider_key, **kwargs):
+    return {"User-Agent": 'My User Agent 1.0'}
 
-class User:
-    def __init__(self, name: str, location: str, posts: int, img_url: str, map_widget: tkintermapview.TkinterMapView):
+
+def get_coordinates(address: str):
+    from geocoder.osm import OsmQuery
+    OsmQuery._build_headers = _build_headers
+    data = tkintermapview.convert_address_to_coordinates(address)
+    latitude = float(data[0])
+    longitude = float(data[1])
+    return [latitude, longitude]
+
+schools: list = []
+employees: list = []
+students: list = []
+classes: list = []
+
+class School:
+    def __init__(self, name: str, address: str):
         self.name = name
+        self.address = address
+        self.coords = get_coordinates(address)
+
+
+class Class:
+    def __init__(self, name: str, school_name: str):
+        self.name = name
+        self.school_name = school_name
+
+class Employee:
+    def __init__(self, name: str, school_name: str, position: str, location: str):
+        self.name = name
+        self.school_name = school_name
+        self.position = position
         self.location = location
-        self.posts = posts
-        self.img_url = img_url
-        self.coords = self.get_coordinates()
-        self.marker = map_widget.set_marker(self.coords[0], self.coords[1], text=self.name)
+        self.coords = get_coordinates(location)
 
-    def get_coordinates(self):
-        import requests
-        url:str=f'https://nominatim.openstreetmap.org/search?q={self.location}&format=json&limit=1'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        data=requests.get(url, headers=headers).json()
-        latitude=float(data[0]['lat'])
-        longitude=float(data[0]['lon'])
-        return [latitude, longitude]
-
+class Student:
+    def __init__(self, name: str, school_name: str, class_name: str, position: str, location: str):
+        self.name = name
+        self.school_name = school_name
+        self.class_name = class_name
+        self.location = location
+        self.coords = get_coordinates(location)
