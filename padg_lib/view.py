@@ -93,12 +93,40 @@ class MapView:
         frame = Frame(parent)
         Label(frame, text="ZARZĄDZANIE KLASAMI").grid(row=0, column=0, sticky=W)
         #TODO zrobić dla klas
+
         return frame
 
     def create_employee_frame(self, parent):
         frame = Frame(parent)
         Label(frame, text="ZARZĄDZANIE PRACOWNIKAMI").grid(row=0, column=0, sticky=W)
         #TODO zrobić dla pracowników
+        self.listbox_employees = Listbox(frame)
+        self.listbox_employees.grid(row=1, column=0)
+
+        self.button_delete_employee = Button(frame, text="Usuń Pracownika")
+        self.button_delete_employee.grid(row=5, column=0, sticky=W)
+
+        self.button_edit_employee = Button(frame, text="Edytuj Pracownika")
+        self.button_edit_school.grid(row=5, column=1, sticky=W)
+
+        formularz = Frame(frame)
+        formularz.grid(row=1, column=1, sticky=N)
+        Label(formularz, text="Formularz Pracownika").grid(row=0, column=0, columnspan=2)
+
+        Label(formularz, text="Imię:").grid(row=1, column=0, sticky=W)
+        self.entry_employee_name = Entry(formularz)
+        self.entry_employee_name.grid(row=1, column=1)
+
+        Label(formularz, text="Miasto:").grid(row=2, column=0, sticky=W)
+        self.entry_employee_city = Entry(formularz)
+        self.entry_employee_city.grid(row=2, column=1)
+
+        Label(formularz, text="Adres:").grid(row=3, column=0, sticky=W)
+        self.entry_employee_street = Entry(formularz)
+        self.entry_employee_street.grid(row=3, column=1)
+
+        self.button_add_employee = Button(formularz, text="Dodaj Pracownika")
+        self.button_add_employee.grid(row=4, column=0, columnspan=2)
         return frame
 
     def create_student_frame(self, parent):

@@ -38,6 +38,8 @@ class MapController:
                 self.markers[obj] = marker
 
 
+############SZKOŁY############
+
     def school_info(self):
         self.view.listbox_schools.delete(0, END)
 
@@ -97,7 +99,8 @@ class MapController:
         school.name = self.view.entry_school_name.get()
         school.city = self.view.entry_school_city.get()
         school.street = self.view.entry_school_street.get()
-        school.coords = get_coordinates(f"{school.city}, {school.street}")
+        address = f"{school.city}, {school.street}"
+        school.coords = get_coordinates(address)
 
         marker = self.markers[school]
         marker.set_position(school.coords[0], school.coords[1])
@@ -114,4 +117,14 @@ class MapController:
             command=lambda: self.add_school()
         )
 
+############SZKOŁY############
 
+############PRACOWNICY############
+
+    def employee_info(self):
+        self.view.listbox_employees.delete(0, END)
+
+        for idx, employee in enumerate(self.employees_data):
+            self.view.listbox_employees.insert(idx, f"{employee.name} {employee.city} {employee.street}")
+
+############PRACOWNICY############
