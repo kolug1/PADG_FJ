@@ -67,10 +67,23 @@ class MapController:
 
     def delete_school(self):
         i = self.view.listbox_schools.index(ACTIVE)
-        school_delete = self.schools_data[i]
-        self.markers[school_delete].delete()
+        school_to_delete = self.schools_data[i]
+        school_name_to_delete = school_to_delete.name
+
+        self.markers[school_to_delete].delete()
         self.schools_data.pop(i)
         self.school_info()
+
+        employees_to_keep = []
+        for employee in self.employees_data:
+            if employee.school_name != school_name_to_delete:
+                employees_to_keep.append(employee)
+            else:
+                self.markers[employee].delete()
+
+        self.employees_data = employees_to_keep
+        self.draw_markers()
+        self.employee_info()
     #
     #
     # def user_details(self):
@@ -86,6 +99,8 @@ class MapController:
     #
     #
     def edit_school(self):
+            if not self.schools_data:
+                return
             i = self.view.listbox_schools.index(ACTIVE)
             school = self.schools_data[i]
             self.view.entry_school_name.delete(0, END)
@@ -102,6 +117,7 @@ class MapController:
     #
     def update_school(self, i):
         school = self.schools_data[i]
+        old_school_name = school.name
 
         school.name = self.view.entry_school_name.get()
         school.city = self.view.entry_school_city.get()
@@ -113,12 +129,16 @@ class MapController:
         marker.set_position(school.coords[0], school.coords[1])
         marker.set_text(school.name)
 
+        for employee in self.employees_data:
+            if employee.school_name == old_school_name:
+                employee.school_name = school.name
 
         self.view.entry_school_name.delete(0, END)
         self.view.entry_school_city.delete(0, END)
         self.view.entry_school_street.delete(0, END)
 
         self.school_info()
+        self.employee_info()
         self.view.button_add_school.config(
             text="Dodaj obiekt",
             command=lambda: self.add_school()
