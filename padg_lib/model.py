@@ -1,4 +1,3 @@
-from padg_lib.controller import MapView
 import tkintermapview
 
 def _build_headers(self, provider_key, **kwargs):
@@ -33,12 +32,14 @@ class Class:
         self.school_name = school_name
 
 class Employee:
-    def __init__(self, name: str, school_name: str, position: str, location: str):
+    def __init__(self, name: str, city: str, street: str, school_name: str, position: str):
         self.name = name
+        self.city = city
+        self.street = street
         self.school_name = school_name
         self.position = position
-        self.location = location
-        self.coords = get_coordinates(location)
+        address: str = f"{city}, {street}"
+        self.coords = get_coordinates(address)
 
 class Student:
     def __init__(self, name: str, school_name: str, class_name: str, position: str, location: str):

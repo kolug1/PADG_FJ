@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter.ttk as ttk
 import tkintermapview
+from padg_lib.model import schools
 
 class MapView:
     def __init__(self, root: Tk):
@@ -107,7 +108,7 @@ class MapView:
         self.button_delete_employee.grid(row=5, column=0, sticky=W)
 
         self.button_edit_employee = Button(frame, text="Edytuj Pracownika")
-        self.button_edit_school.grid(row=5, column=1, sticky=W)
+        self.button_edit_employee.grid(row=5, column=1, sticky=W)
 
         formularz = Frame(frame)
         formularz.grid(row=1, column=1, sticky=N)
@@ -125,8 +126,15 @@ class MapView:
         self.entry_employee_street = Entry(formularz)
         self.entry_employee_street.grid(row=3, column=1)
 
+        Label(formularz, text="Stanowisko:").grid(row=4, column=0, sticky=W)
+        self.entry_employee_position = Entry(formularz)
+        self.entry_employee_position.grid(row=4, column=1)
+
+
+
+
         self.button_add_employee = Button(formularz, text="Dodaj Pracownika")
-        self.button_add_employee.grid(row=4, column=0, columnspan=2)
+        self.button_add_employee.grid(row=6, column=0, columnspan=2)
         return frame
 
     def create_student_frame(self, parent):
