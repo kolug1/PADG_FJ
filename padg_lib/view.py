@@ -130,8 +130,15 @@ class MapView:
         self.entry_employee_position = Entry(formularz)
         self.entry_employee_position.grid(row=4, column=1)
 
-
-
+        self.selected_school = StringVar()
+        Label(formularz, text="Szkoła:").grid(row=5, column=0, sticky=W)
+        self.entry_employee_school = ttk.Combobox(
+            formularz,
+            textvariable=self.selected_school,
+            values=[],
+            state="readonly"
+        )
+        self.entry_employee_school.grid(row=5, column=1)
 
         self.button_add_employee = Button(formularz, text="Dodaj Pracownika")
         self.button_add_employee.grid(row=6, column=0, columnspan=2)
