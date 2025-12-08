@@ -110,6 +110,7 @@ class MapController:
         self.draw_markers()
         self.employee_info()
         self.class_info()
+        self.student_info()
     #
     #
     # def user_details(self):
@@ -170,6 +171,7 @@ class MapController:
         self.school_info()
         self.employee_info()
         self.class_info()
+        self.student_info()
         self.view.button_add_school.config(
             text="Dodaj obiekt",
             command=lambda: self.add_school()
@@ -273,6 +275,7 @@ class MapController:
         self.class_info()
         self.view.entry_class_name.delete(0, END)
         self.view.combobox_school_for_class.set('')
+        self.student_info()
 
 
     def delete_class(self):
