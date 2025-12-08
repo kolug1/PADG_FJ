@@ -92,14 +92,42 @@ class MapView:
 
     def create_class_frame(self, parent):
         frame = Frame(parent)
-        Label(frame, text="ZARZĄDZANIE KLASAMI").grid(row=0, column=0, sticky=W)
-        #TODO zrobić dla klas
 
+        Label(frame, text="LISTA KLAS").grid(row=0, column=0, sticky=W)
+        self.listbox_classes = Listbox(frame)
+        self.listbox_classes.grid(row=1, column=0)
+
+        self.button_delete_class = Button(frame, text="Usuń Klasę")
+        self.button_delete_class.grid(row=5, column=0, sticky=W)
+
+        self.button_edit_class = Button(frame, text="Edytuj Klasę")
+        self.button_edit_class.grid(row=5, column=1, sticky=W)
+
+        formularz = Frame(frame)
+        formularz.grid(row=1, column=1, sticky=N)
+        Label(formularz, text="Formularz Klasy").grid(row=0, column=0, columnspan=2)
+
+        Label(formularz, text="Nazwa:").grid(row=1, column=0, sticky=W)
+        self.entry_class_name = Entry(formularz)
+        self.entry_class_name.grid(row=1, column=1)
+
+        self.selected_school_for_class = StringVar()
+        Label(formularz, text="Szkoła:").grid(row=2, column=0, sticky=W)
+        self.combobox_school_for_class = ttk.Combobox(
+            formularz,
+            textvariable=self.selected_school_for_class,
+            values=[],
+            state="readonly"
+        )
+        self.combobox_school_for_class.grid(row=2, column=1)
+
+        self.button_add_class = Button(formularz, text="Dodaj Klasę")
+        self.button_add_class.grid(row=3, column=0, columnspan=2)
         return frame
 
     def create_employee_frame(self, parent):
         frame = Frame(parent)
-        Label(frame, text="ZARZĄDZANIE PRACOWNIKAMI").grid(row=0, column=0, sticky=W)
+        Label(frame, text="LISTA PRACOWNIKÓW").grid(row=0, column=0, sticky=W)
         #TODO zrobić dla pracowników
         self.listbox_employees = Listbox(frame)
         self.listbox_employees.grid(row=1, column=0)
@@ -146,8 +174,50 @@ class MapView:
 
     def create_student_frame(self, parent):
         frame = Frame(parent)
-        Label(frame, text="ZARZĄDZANIE UCZNIAMI").grid(row=0, column=0, sticky=W)
-        #TODO zrobić dla uczniów
+        Label(frame, text="LISTA UCZNIÓW").grid(row=0, column=0, sticky=W)
+        self.listbox_students = Listbox(frame)
+        self.listbox_students.grid(row=1, column=0)
+
+        self.button_delete_student = Button(frame, text="Usuń Ucznia")
+        self.button_delete_student.grid(row=5, column=0, sticky=W)
+
+        self.button_edit_student = Button(frame, text="Edytuj Ucznia")
+        self.button_edit_student.grid(row=5, column=1, sticky=W)
+
+        formularz = Frame(frame)
+        formularz.grid(row=1, column=1, sticky=N)
+        Label(formularz, text="Formularz Ucznia").grid(row=0, column=0, columnspan=2)
+
+        Label(formularz, text="Imię:").grid(row=1, column=0, sticky=W)
+        self.entry_student_name = Entry(formularz)
+        self.entry_student_name.grid(row=1, column=1)
+
+        Label(formularz, text="Adres:").grid(row=2, column=0, sticky=W)
+        self.entry_student_address = Entry(formularz)
+        self.entry_student_address.grid(row=2, column=1)
+
+        self.selected_school_for_student = StringVar()
+        Label(formularz, text="Szkoła:").grid(row=3, column=0, sticky=W)
+        self.combobox_school_for_student = ttk.Combobox(
+            formularz,
+            textvariable=self.selected_school_for_student,
+            values=[],
+            state="readonly"
+        )
+        self.combobox_school_for_student.grid(row=3, column=1)
+
+        self.selected_class_for_student = StringVar()
+        Label(formularz, text="Klasa:").grid(row=4, column=0, sticky=W)
+        self.combobox_class_for_student = ttk.Combobox(
+            formularz,
+            textvariable=self.selected_class_for_student,
+            values=[],
+            state="readonly"
+        )
+        self.combobox_class_for_student.grid(row=4, column=1)
+
+        self.button_add_student = Button(formularz, text="Dodaj Ucznia")
+        self.button_add_student.grid(row=5, column=0, columnspan=2)
         return frame
 
 

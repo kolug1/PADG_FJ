@@ -8,6 +8,8 @@ def get_coordinates(address: str):
     from geocoder.osm import OsmQuery
     OsmQuery._build_headers = _build_headers
     data = tkintermapview.convert_address_to_coordinates(address)
+    if data is None:
+        return [0, 0]
     latitude = float(data[0])
     longitude = float(data[1])
     return [latitude, longitude]
