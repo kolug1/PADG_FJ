@@ -240,6 +240,6 @@ class MapView:
     def create_map_frame(self):
         # RAMKA MAPY
         self.map_widget = tkintermapview.TkinterMapView(self.ramka_mapa, width=1025, height=600)
-        self.map_widget.set_position(52.0, 21.0)
-        self.map_widget.set_zoom(10)
+        self.map_widget.set_position(52.19, 21.01)
+        self.map_widget.set_zoom(11)
         self.map_widget.grid(row=0, column=0)
