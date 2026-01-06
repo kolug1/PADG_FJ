@@ -1,7 +1,6 @@
 from tkinter import *
 from padg_lib.view import MapView
 from padg_lib.model import School, Class, Employee, Student, schools, classes, employees, students, get_coordinates
-import tkintermapview
 
 
 class MapController:
@@ -21,6 +20,7 @@ class MapController:
         self.view.button_add_school.config(command=lambda: self.add_school())
         self.view.button_delete_school.config(command=lambda: self.delete_school())
         self.view.button_edit_school.config(command=lambda: self.edit_school())
+        self.view.button_show_on_map.config(command=self.show_schools_on_map)
 
         self.view.button_add_employee.config(command=lambda: self.add_employee())
         self.view.button_delete_employee.config(command=lambda: self.delete_employee())
@@ -45,6 +45,28 @@ class MapController:
     def category_selection(self, event):
         selected_category = self.view.selected_category.get()
         self.view.show_frame(selected_category)
+        if selected_category == "Szkoły":
+            self.show_schools_on_map()
+        else:
+            self.draw_markers()
+
+
+    def show_schools_on_map(self):
+        city_filter = self.view.entry_map_city_filter.get()
+
+        for obj, marker_instance in self.markers.items():
+            marker_instance.delete()
+        self.markers = {}
+
+        if city_filter:
+            schools_to_show = [school for school in self.schools_data if school.city.lower() == city_filter.lower()]
+        else:
+            schools_to_show = self.schools_data
+
+        for school in schools_to_show:
+            if hasattr(school, 'coords') and school.coords:
+                marker = self.view.map_widget.set_marker(school.coords[0], school.coords[1], text=school.name)
+                self.markers[school] = marker
 
 
     def draw_markers(self):

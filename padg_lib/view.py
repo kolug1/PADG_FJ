@@ -88,6 +88,15 @@ class MapView:
         self.button_add_school = Button(formularz, text="Dodaj Szkołę")
         self.button_add_school.grid(row=4, column=0, columnspan=2)
 
+        map_filter_frame = Frame(frame)
+        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+
+        Label(map_filter_frame, text="Filtruj mapę po mieście:").grid(row=0, column=0, sticky=W)
+        self.entry_map_city_filter = Entry(map_filter_frame)
+        self.entry_map_city_filter.grid(row=0, column=1, sticky=W, padx=5)
+        self.button_show_on_map = Button(map_filter_frame, text="Pokaż na mapie")
+        self.button_show_on_map.grid(row=0, column=2, sticky=W)
+
         return frame
 
     def create_class_frame(self, parent):
@@ -128,7 +137,6 @@ class MapView:
     def create_employee_frame(self, parent):
         frame = Frame(parent)
         Label(frame, text="LISTA PRACOWNIKÓW").grid(row=0, column=0, sticky=W)
-        #TODO zrobić dla pracowników
         self.listbox_employees = Listbox(frame)
         self.listbox_employees.grid(row=1, column=0)
 
