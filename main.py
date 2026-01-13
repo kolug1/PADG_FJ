@@ -8,3 +8,6 @@ if __name__ == "__main__":
     view = MapView(root)
     controller = MapController(root, view)
     root.mainloop()
+
+
+#TODO przy edytowaniu szkół jest jakiś błąd

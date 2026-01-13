@@ -1,7 +1,6 @@
 from tkinter import *
 from padg_lib.view import MapView
 from padg_lib.model import School, Class, Employee, Student, schools, classes, employees, students, get_coordinates
-import tkintermapview
 
 
 class MapController:
@@ -21,6 +20,7 @@ class MapController:
         self.view.button_add_school.config(command=lambda: self.add_school())
         self.view.button_delete_school.config(command=lambda: self.delete_school())
         self.view.button_edit_school.config(command=lambda: self.edit_school())
+        self.view.button_show_on_map.config(command=self.show_schools_on_map)
 
         self.view.button_add_employee.config(command=lambda: self.add_employee())
         self.view.button_delete_employee.config(command=lambda: self.delete_employee())
@@ -45,6 +45,28 @@ class MapController:
     def category_selection(self, event):
         selected_category = self.view.selected_category.get()
         self.view.show_frame(selected_category)
+        if selected_category == "Szkoły":
+            self.show_schools_on_map()
+        else:
+            self.draw_markers()
+
+
+    def show_schools_on_map(self):
+        city_filter = self.view.entry_map_city_filter.get()
+
+        for obj, marker_instance in self.markers.items():
+            marker_instance.delete()
+        self.markers = {}
+
+        if city_filter:
+            schools_to_show = [school for school in self.schools_data if school.city.lower() == city_filter.lower()]
+        else:
+            schools_to_show = self.schools_data
+
+        for school in schools_to_show:
+            if hasattr(school, 'coords') and school.coords:
+                marker = self.view.map_widget.set_marker(school.coords[0], school.coords[1], text=school.name)
+                self.markers[school] = marker
 
 
     def draw_markers(self):
@@ -87,7 +109,6 @@ class MapController:
         school_to_delete = self.schools_data[i]
         school_name_to_delete = school_to_delete.name
 
-        self.markers[school_to_delete].delete()
         self.schools_data.pop(i)
         self.school_info()
 
@@ -95,8 +116,6 @@ class MapController:
         for employee in self.employees_data:
             if employee.school_name != school_name_to_delete:
                 employees_to_keep.append(employee)
-            else:
-                self.markers[employee].delete()
 
         self.employees_data = employees_to_keep
 
@@ -107,10 +126,10 @@ class MapController:
 
         self.classes_data = classes_to_keep
         self.class_info()
-        self.draw_markers()
         self.employee_info()
         self.class_info()
         self.student_info()
+        self.draw_markers()
     #
     #
     # def user_details(self):
@@ -164,6 +183,10 @@ class MapController:
             if class_.school_name == old_school_name:
                 class_.school_name = school.name
 
+        for student in self.students_data:
+            if student.school_name == old_school_name:
+                student.school_name = school.name
+
         self.view.entry_school_name.delete(0, END)
         self.view.entry_school_city.delete(0, END)
         self.view.entry_school_street.delete(0, END)
@@ -206,9 +229,9 @@ class MapController:
     def delete_employee(self):
         i = self.view.listbox_employees.index(ACTIVE)
         employee_delete = self.employees_data[i]
-        self.markers[employee_delete].delete()
         self.employees_data.pop(i)
         self.employee_info()
+        self.draw_markers()
 
     def edit_employee(self):
         i = self.view.listbox_employees.index(ACTIVE)
@@ -291,10 +314,9 @@ class MapController:
         for student in self.students_data:
             if not (student.class_name == class_name_to_delete and student.school_name == school_name_to_delete):
                 students_to_keep.append(student)
-            else:
-                self.markers[student].delete()
         self.students_data = students_to_keep
         self.student_info()
+        self.draw_markers()
 
     def edit_class(self):
         i = self.view.listbox_classes.index(ACTIVE)
@@ -309,8 +331,16 @@ class MapController:
 
     def update_class(self, i):
         class_ = self.classes_data[i]
+        old_name = class_.name
+        old_school = class_.school_name
+
         class_.name = self.view.entry_class_name.get()
         class_.school_name = self.view.combobox_school_for_class.get()
+
+        for student in self.students_data:
+            if student.class_name == old_name and student.school_name == old_school:
+                student.class_name = class_.name
+                student.school_name = class_.school_name
 
         self.view.entry_class_name.delete(0, END)
         self.view.combobox_school_for_class.set('')
@@ -351,9 +381,9 @@ class MapController:
     def delete_student(self):
         i = self.view.listbox_students.index(ACTIVE)
         student_to_delete = self.students_data[i]
-        self.markers[student_to_delete].delete()
         self.students_data.pop(i)
         self.student_info()
+        self.draw_markers()
 
     def edit_student(self):
         if not self.students_data:
