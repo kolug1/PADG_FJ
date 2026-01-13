@@ -10,4 +10,3 @@ if __name__ == "__main__":
     root.mainloop()
 
 
-#TODO przy edytowaniu szkół jest jakiś błąd

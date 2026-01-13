@@ -243,6 +243,31 @@ class MapView:
 
         self.button_add_student = Button(formularz, text="Dodaj Ucznia")
         self.button_add_student.grid(row=5, column=0, columnspan=2)
+
+        map_filter_frame = Frame(frame)
+        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        
+        Label(map_filter_frame, text="Szkoła:").grid(row=1, column=0, sticky=W)
+        self.entry_student_filter_school = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="readonly"
+        )
+        self.entry_student_filter_school.grid(row=1, column=1, sticky=W, padx=5)
+
+        Label(map_filter_frame, text="Klasa:").grid(row=2, column=0, sticky=W)
+        self.entry_student_filter_class = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="readonly"
+        )
+        self.entry_student_filter_class.grid(row=2, column=1, sticky=W, padx=5)
+
+        self.button_filter_students = Button(map_filter_frame, text="Filtruj")
+        self.button_filter_students.grid(row=3, column=0, columnspan=2, sticky=W)
+
         return frame
 
 

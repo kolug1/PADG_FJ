@@ -15,6 +15,7 @@ class MapController:
         self.employees_data:list = employees
         self.displayed_employees:list = list(employees)
         self.students_data:list = students
+        self.displayed_students:list = list(students)
         self.classes_data:list = classes
 
         self.markers: dict = {}
@@ -36,8 +37,10 @@ class MapController:
         self.view.button_add_student.config(command=lambda: self.add_student())
         self.view.button_delete_student.config(command=lambda: self.delete_student())
         self.view.button_edit_student.config(command=lambda: self.edit_student())
+        self.view.button_filter_students.config(command=self.filter_students)
 
         self.view.combobox_school_for_student.bind("<<ComboboxSelected>>", self.update_class_combobox)
+        self.view.entry_student_filter_school.bind("<<ComboboxSelected>>", self.update_student_filter_class_combobox)
 
         self.school_info()
         self.employee_info()
@@ -391,14 +394,36 @@ class MapController:
 
 ############UCZNIOWIE############
 
-    def student_info(self):
+    def filter_students(self):
+        school_filter = self.view.entry_student_filter_school.get()
+        class_filter = self.view.entry_student_filter_class.get()
+
+        for obj, marker_instance in self.markers.items():
+            marker_instance.delete()
+        self.markers = {}
+
         self.view.listbox_students.delete(0, END)
 
-        for idx, student in enumerate(self.students_data):
+        filtered = self.students_data
+        if school_filter:
+            filtered = [s for s in filtered if s.school_name == school_filter]
+        if class_filter:
+            filtered = [s for s in filtered if s.class_name == class_filter]
+        
+        self.displayed_students = list(filtered)
+
+        for idx, student in enumerate(self.displayed_students):
+            if hasattr(student, 'coords') and student.coords:
+                marker = self.view.map_widget.set_marker(student.coords[0], student.coords[1], text=student.name)
+                self.markers[student] = marker
             self.view.listbox_students.insert(idx, f"{student.name} {student.school_name} {student.class_name}")
 
+    def student_info(self):
+        self.filter_students()
+        
         school_names = [school.name for school in self.schools_data]
         self.view.combobox_school_for_student['values'] = school_names
+        self.view.entry_student_filter_school['values'] = school_names
 
     def add_student(self) -> None:
         name: str = self.view.entry_student_name.get()
@@ -415,17 +440,27 @@ class MapController:
         self.draw_markers()
 
     def delete_student(self):
-        i = self.view.listbox_students.index(ACTIVE)
-        student_to_delete = self.students_data[i]
-        self.students_data.pop(i)
+        try:
+            i = self.view.listbox_students.index(ACTIVE)
+            student_to_delete = self.displayed_students[i]
+        except (IndexError, ValueError):
+            return
+
+        if student_to_delete in self.markers:
+            self.markers[student_to_delete].delete()
+        
+        if student_to_delete in self.students_data:
+            self.students_data.remove(student_to_delete)
+        
         self.student_info()
-        self.draw_markers()
 
     def edit_student(self):
-        if not self.students_data:
+        try:
+            i = self.view.listbox_students.index(ACTIVE)
+            student = self.displayed_students[i]
+        except (IndexError, ValueError):
             return
-        i = self.view.listbox_students.index(ACTIVE)
-        student = self.students_data[i]
+        
         self.view.entry_student_name.delete(0, END)
         self.view.entry_student_address.delete(0, END)
         self.view.entry_student_name.insert(0, student.name)
@@ -435,20 +470,21 @@ class MapController:
         self.view.combobox_class_for_student.set(student.class_name)
         self.view.button_add_student.config(
             text="Zapisz zmiany",
-            command=lambda: self.update_student(i)
+            command=lambda: self.update_student(student)
         )
 
-    def update_student(self, i):
-        student = self.students_data[i]
+    def update_student(self, student):
+        
         student.name = self.view.entry_student_name.get()
         student.location = self.view.entry_student_address.get()
         student.school_name = self.view.combobox_school_for_student.get()
         student.class_name = self.view.combobox_class_for_student.get()
         student.coords = get_coordinates(student.location)
 
-        marker = self.markers[student]
-        marker.set_position(student.coords[0], student.coords[1])
-        marker.set_text(student.name)
+        if student in self.markers:
+            marker = self.markers[student]
+            marker.set_position(student.coords[0], student.coords[1])
+            marker.set_text(student.name)
 
         self.view.entry_student_name.delete(0, END)
         self.view.entry_student_address.delete(0, END)
@@ -465,5 +501,10 @@ class MapController:
         school_name = self.view.combobox_school_for_student.get()
         class_names = [class_.name for class_ in self.classes_data if class_.school_name == school_name]
         self.view.combobox_class_for_student['values'] = class_names
+    
+    def update_student_filter_class_combobox(self, event):
+        school_name = self.view.entry_student_filter_school.get()
+        class_names = [class_.name for class_ in self.classes_data if class_.school_name == school_name]
+        self.view.entry_student_filter_class['values'] = class_names
 
 ############UCZNIOWIE############
