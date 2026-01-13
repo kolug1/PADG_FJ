@@ -178,6 +178,27 @@ class MapView:
 
         self.button_add_employee = Button(formularz, text="Dodaj Pracownika")
         self.button_add_employee.grid(row=6, column=0, columnspan=2)
+
+        map_filter_frame = Frame(frame)
+        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        
+        Label(map_filter_frame, text="Miasto:").grid(row=1, column=0, sticky=W)
+        self.entry_employee_filter_city = Entry(map_filter_frame)
+        self.entry_employee_filter_city.grid(row=1, column=1, sticky=W, padx=5)
+        
+        Label(map_filter_frame, text="Szkoła:").grid(row=2, column=0, sticky=W)
+        self.entry_employee_filter_school = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="normal"
+        )
+        self.entry_employee_filter_school.grid(row=2, column=1, sticky=W, padx=5)
+
+        self.button_filter_employees = Button(map_filter_frame, text="Filtruj")
+        self.button_filter_employees.grid(row=3, column=0, columnspan=2, sticky=W)
+
         return frame
 
     def create_student_frame(self, parent):
