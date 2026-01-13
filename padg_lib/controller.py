@@ -53,16 +53,18 @@ class MapController:
         self.view.show_frame(selected_category)
         if selected_category == "Szkoły":
             self.show_schools_on_map()
+        elif selected_category == "Pracownicy":
+            self.filter_employees()
+        elif selected_category == "Uczniowie":
+            self.filter_students()
         else:
-            self.draw_markers()
+            for obj, marker_instance in self.markers.items():
+                marker_instance.delete()
+            self.markers = {}
 
 
     def show_schools_on_map(self):
         city_filter = self.view.entry_map_city_filter.get()
-
-        for obj, marker_instance in self.markers.items():
-            marker_instance.delete()
-        self.markers = {}
 
         self.view.listbox_schools.delete(0, END)
 
@@ -71,21 +73,23 @@ class MapController:
         else:
             self.displayed_schools = list(self.schools_data)
 
-        for idx, school in enumerate(self.displayed_schools):
-            if hasattr(school, 'coords') and school.coords:
-                marker = self.view.map_widget.set_marker(school.coords[0], school.coords[1], text=school.name)
-                self.markers[school] = marker
-            self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
+        if self.view.selected_category.get() == "Szkoły":
+            for obj, marker_instance in self.markers.items():
+                marker_instance.delete()
+            self.markers = {}
+            
+            for idx, school in enumerate(self.displayed_schools):
+                if hasattr(school, 'coords') and school.coords:
+                    marker = self.view.map_widget.set_marker(school.coords[0], school.coords[1], text=school.name)
+                    self.markers[school] = marker
+                self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
+        else:
+            for idx, school in enumerate(self.displayed_schools):
+                self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
 
 
     def draw_markers(self):
-        for obj, marker_instance in self.markers.items():
-            marker_instance.delete()
-        self.markers = {}
-        objects_to_draw = self.schools_data + self.employees_data + self.students_data
-        for obj in objects_to_draw:
-                marker = self.view.map_widget.set_marker(obj.coords[0], obj.coords[1], text=obj.name)
-                self.markers[obj] = marker
+        pass
 
 
 ############SZKOŁY############
@@ -108,7 +112,6 @@ class MapController:
         self.view.entry_school_name.delete(0, END)
         self.view.entry_school_city.delete(0, END)
         self.view.entry_school_street.delete(0, END)
-        self.draw_markers()
         self.student_info()
 
     def delete_school(self):
@@ -142,7 +145,6 @@ class MapController:
 
         self.classes_data = classes_to_keep
         self.class_info()
-        self.draw_markers()
         self.employee_info()
         self.class_info()
         self.student_info()
@@ -226,10 +228,6 @@ class MapController:
         city_filter = self.view.entry_employee_filter_city.get()
         school_filter = self.view.entry_employee_filter_school.get()
 
-        for obj, marker_instance in self.markers.items():
-            marker_instance.delete()
-        self.markers = {}
-
         self.view.listbox_employees.delete(0, END)
 
         filtered = self.employees_data
@@ -240,11 +238,19 @@ class MapController:
         
         self.displayed_employees = list(filtered)
 
-        for idx, employee in enumerate(self.displayed_employees):
-            if hasattr(employee, 'coords') and employee.coords:
-                marker = self.view.map_widget.set_marker(employee.coords[0], employee.coords[1], text=employee.name)
-                self.markers[employee] = marker
-            self.view.listbox_employees.insert(idx, f"{employee.name} {employee.city} {employee.street}")
+        if self.view.selected_category.get() == "Pracownicy":
+            for obj, marker_instance in self.markers.items():
+                marker_instance.delete()
+            self.markers = {}
+
+            for idx, employee in enumerate(self.displayed_employees):
+                if hasattr(employee, 'coords') and employee.coords:
+                    marker = self.view.map_widget.set_marker(employee.coords[0], employee.coords[1], text=employee.name)
+                    self.markers[employee] = marker
+                self.view.listbox_employees.insert(idx, f"{employee.name} {employee.city} {employee.street}")
+        else:
+             for idx, employee in enumerate(self.displayed_employees):
+                self.view.listbox_employees.insert(idx, f"{employee.name} {employee.city} {employee.street}")
 
     def employee_info(self):
         self.filter_employees()
@@ -261,7 +267,6 @@ class MapController:
         self.view.entry_employee_city.delete(0, END)
         self.view.entry_employee_street.delete(0, END)
         self.view.entry_employee_school.delete(0, END)
-        self.draw_markers()
 
     def delete_employee(self):
         i = self.view.listbox_employees.index(ACTIVE)
@@ -355,7 +360,6 @@ class MapController:
                 students_to_keep.append(student)
         self.students_data = students_to_keep
         self.student_info()
-        self.draw_markers()
 
     def edit_class(self):
         i = self.view.listbox_classes.index(ACTIVE)
@@ -398,10 +402,6 @@ class MapController:
         school_filter = self.view.entry_student_filter_school.get()
         class_filter = self.view.entry_student_filter_class.get()
 
-        for obj, marker_instance in self.markers.items():
-            marker_instance.delete()
-        self.markers = {}
-
         self.view.listbox_students.delete(0, END)
 
         filtered = self.students_data
@@ -412,11 +412,19 @@ class MapController:
         
         self.displayed_students = list(filtered)
 
-        for idx, student in enumerate(self.displayed_students):
-            if hasattr(student, 'coords') and student.coords:
-                marker = self.view.map_widget.set_marker(student.coords[0], student.coords[1], text=student.name)
-                self.markers[student] = marker
-            self.view.listbox_students.insert(idx, f"{student.name} {student.school_name} {student.class_name}")
+        if self.view.selected_category.get() == "Uczniowie":
+            for obj, marker_instance in self.markers.items():
+                marker_instance.delete()
+            self.markers = {}
+
+            for idx, student in enumerate(self.displayed_students):
+                if hasattr(student, 'coords') and student.coords:
+                    marker = self.view.map_widget.set_marker(student.coords[0], student.coords[1], text=student.name)
+                    self.markers[student] = marker
+                self.view.listbox_students.insert(idx, f"{student.name} {student.school_name} {student.class_name}")
+        else:
+            for idx, student in enumerate(self.displayed_students):
+                self.view.listbox_students.insert(idx, f"{student.name} {student.school_name} {student.class_name}")
 
     def student_info(self):
         self.filter_students()
@@ -430,14 +438,13 @@ class MapController:
         address: str = self.view.entry_student_address.get()
         school_name: str = self.view.combobox_school_for_student.get()
         class_name: str = self.view.combobox_class_for_student.get()
-        student = Student(name=name, school_name=school_name, class_name=class_name, position=None, location=address)
+        student = Student(name=name, school_name=school_name, class_name=class_name, location=address)
         self.students_data.append(student)
         self.student_info()
         self.view.entry_student_name.delete(0, END)
         self.view.entry_student_address.delete(0, END)
         self.view.combobox_school_for_student.set('')
         self.view.combobox_class_for_student.set('')
-        self.draw_markers()
 
     def delete_student(self):
         try:

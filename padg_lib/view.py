@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter.ttk as ttk
 import tkintermapview
-from padg_lib.model import schools
 
 class MapView:
     def __init__(self, root: Tk):
