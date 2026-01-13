@@ -251,15 +251,13 @@ class MapController:
         city: str = self.view.entry_employee_city.get()
         street: str = self.view.entry_employee_street.get()
         school_name: str = self.view.entry_employee_school.get()
-        position: str = self.view.entry_employee_position.get()
-        employee = Employee(name=name, city=city, street=street, school_name=school_name, position=position)
+        employee = Employee(name=name, city=city, street=street, school_name=school_name)
         self.employees_data.append(employee)
         self.employee_info()
         self.view.entry_employee_name.delete(0, END)
         self.view.entry_employee_city.delete(0, END)
         self.view.entry_employee_street.delete(0, END)
         self.view.entry_employee_school.delete(0, END)
-        self.view.entry_employee_position.delete(0, END)
         self.draw_markers()
 
     def delete_employee(self):
@@ -282,12 +280,10 @@ class MapController:
         self.view.entry_employee_city.delete(0, END)
         self.view.entry_employee_street.delete(0, END)
         self.view.entry_employee_school.delete(0, END)
-        self.view.entry_employee_position.delete(0, END)
         self.view.entry_employee_name.insert(0, employee.name)
         self.view.entry_employee_city.insert(0, employee.city)
         self.view.entry_employee_street.insert(0, employee.street)
         self.view.entry_employee_school.set(employee.school_name)
-        self.view.entry_employee_position.insert(0, employee.position)
         self.view.button_add_employee.config(
             text="Zapisz zmiany",
             command=lambda: self.update_employee(employee)
@@ -299,7 +295,6 @@ class MapController:
         employee.city = self.view.entry_employee_city.get()
         employee.street = self.view.entry_employee_street.get()
         employee.school_name = self.view.entry_employee_school.get()
-        employee.position = self.view.entry_employee_position.get()
         address = f"{employee.city}, {employee.street}"
         employee.coords = get_coordinates(address)
 
@@ -312,7 +307,6 @@ class MapController:
         self.view.entry_employee_city.delete(0, END)
         self.view.entry_employee_street.delete(0, END)
         self.view.entry_employee_school.delete(0, END)
-        self.view.entry_employee_position.delete(0, END)
         self.employee_info()
         self.view.button_add_employee.config(
             text="Dodaj Pracownika",

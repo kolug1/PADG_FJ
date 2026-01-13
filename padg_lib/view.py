@@ -162,10 +162,6 @@ class MapView:
         self.entry_employee_street = Entry(formularz)
         self.entry_employee_street.grid(row=3, column=1)
 
-        Label(formularz, text="Stanowisko:").grid(row=4, column=0, sticky=W)
-        self.entry_employee_position = Entry(formularz)
-        self.entry_employee_position.grid(row=4, column=1)
-
         self.selected_school = StringVar()
         Label(formularz, text="Szkoła:").grid(row=5, column=0, sticky=W)
         self.entry_employee_school = ttk.Combobox(
@@ -180,7 +176,7 @@ class MapView:
         self.button_add_employee.grid(row=6, column=0, columnspan=2)
 
         map_filter_frame = Frame(frame)
-        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+        map_filter_frame.grid(row=1, column=2, sticky=N, columnspan=3, padx=10)
 
         Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
         
