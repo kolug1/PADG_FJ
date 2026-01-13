@@ -11,6 +11,7 @@ class MapController:
         self.view.combobox_kategoria.bind("<<ComboboxSelected>>", self.category_selection)
 
         self.schools_data:list = schools
+        self.displayed_schools:list = list(schools)
         self.employees_data:list = employees
         self.students_data:list = students
         self.classes_data:list = classes
@@ -58,15 +59,18 @@ class MapController:
             marker_instance.delete()
         self.markers = {}
 
-        if city_filter:
-            schools_to_show = [school for school in self.schools_data if school.city.lower() == city_filter.lower()]
-        else:
-            schools_to_show = self.schools_data
+        self.view.listbox_schools.delete(0, END)
 
-        for school in schools_to_show:
+        if city_filter:
+            self.displayed_schools = [school for school in self.schools_data if school.city.lower() == city_filter.lower()]
+        else:
+            self.displayed_schools = list(self.schools_data)
+
+        for idx, school in enumerate(self.displayed_schools):
             if hasattr(school, 'coords') and school.coords:
                 marker = self.view.map_widget.set_marker(school.coords[0], school.coords[1], text=school.name)
                 self.markers[school] = marker
+            self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
 
 
     def draw_markers(self):
@@ -82,10 +86,7 @@ class MapController:
 ############SZKOŁY############
 
     def school_info(self):
-        self.view.listbox_schools.delete(0, END)
-
-        for idx, school in enumerate(self.schools_data):
-            self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
+        self.show_schools_on_map()
 
         school_names = [school.name for school in self.schools_data]
         self.view.entry_employee_school['values'] = school_names
@@ -106,16 +107,25 @@ class MapController:
 
     def delete_school(self):
         i = self.view.listbox_schools.index(ACTIVE)
-        school_to_delete = self.schools_data[i]
+        school_to_delete = self.displayed_schools[i]
+
         school_name_to_delete = school_to_delete.name
 
-        self.schools_data.pop(i)
+        if school_to_delete in self.markers:
+            self.markers[school_to_delete].delete()
+        
+        if school_to_delete in self.schools_data:
+            self.schools_data.remove(school_to_delete)
+        
         self.school_info()
 
         employees_to_keep = []
         for employee in self.employees_data:
             if employee.school_name != school_name_to_delete:
                 employees_to_keep.append(employee)
+            else:
+                if employee in self.markers:
+                    self.markers[employee].delete()
 
         self.employees_data = employees_to_keep
 
@@ -126,10 +136,10 @@ class MapController:
 
         self.classes_data = classes_to_keep
         self.class_info()
+        self.draw_markers()
         self.employee_info()
         self.class_info()
         self.student_info()
-        self.draw_markers()
     #
     #
     # def user_details(self):
@@ -147,8 +157,10 @@ class MapController:
     def edit_school(self):
             if not self.schools_data:
                 return
+
             i = self.view.listbox_schools.index(ACTIVE)
-            school = self.schools_data[i]
+            school = self.displayed_schools[i]
+
             self.view.entry_school_name.delete(0, END)
             self.view.entry_school_city.delete(0, END)
             self.view.entry_school_street.delete(0, END)
@@ -157,12 +169,11 @@ class MapController:
             self.view.entry_school_street.insert(0, school.street)
             self.view.button_add_school.config(
                 text="Zapisz zmiany",
-                command=lambda: self.update_school(i)
+                command=lambda: self.update_school(school)
             )
     #
     #
-    def update_school(self, i):
-        school = self.schools_data[i]
+    def update_school(self, school):
         old_school_name = school.name
 
         school.name = self.view.entry_school_name.get()
@@ -171,9 +182,10 @@ class MapController:
         address = f"{school.city}, {school.street}"
         school.coords = get_coordinates(address)
 
-        marker = self.markers[school]
-        marker.set_position(school.coords[0], school.coords[1])
-        marker.set_text(school.name)
+        if school in self.markers:
+            marker = self.markers[school]
+            marker.set_position(school.coords[0], school.coords[1])
+            marker.set_text(school.name)
 
         for employee in self.employees_data:
             if employee.school_name == old_school_name:

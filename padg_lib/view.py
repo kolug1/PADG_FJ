@@ -91,10 +91,10 @@ class MapView:
         map_filter_frame = Frame(frame)
         map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
 
-        Label(map_filter_frame, text="Filtruj mapę po mieście:").grid(row=0, column=0, sticky=W)
+        Label(map_filter_frame, text="Filtruj (lista i mapa) po mieście:").grid(row=0, column=0, sticky=W)
         self.entry_map_city_filter = Entry(map_filter_frame)
         self.entry_map_city_filter.grid(row=0, column=1, sticky=W, padx=5)
-        self.button_show_on_map = Button(map_filter_frame, text="Pokaż na mapie")
+        self.button_show_on_map = Button(map_filter_frame, text="Filtruj")
         self.button_show_on_map.grid(row=0, column=2, sticky=W)
 
         return frame
