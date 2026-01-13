@@ -95,6 +95,8 @@ class MapView:
         self.entry_map_city_filter.grid(row=0, column=1, sticky=W, padx=5)
         self.button_show_on_map = Button(map_filter_frame, text="Filtruj")
         self.button_show_on_map.grid(row=0, column=2, sticky=W)
+        self.button_reset_school_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_school_filter.grid(row=0, column=3, sticky=W, padx=5)
 
         return frame
 
@@ -192,7 +194,9 @@ class MapView:
         self.entry_employee_filter_school.grid(row=2, column=1, sticky=W, padx=5)
 
         self.button_filter_employees = Button(map_filter_frame, text="Filtruj")
-        self.button_filter_employees.grid(row=3, column=0, columnspan=2, sticky=W)
+        self.button_filter_employees.grid(row=3, column=0, sticky=W)
+        self.button_reset_employee_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_employee_filter.grid(row=3, column=1, sticky=W)
 
         return frame
 
@@ -265,7 +269,9 @@ class MapView:
         self.entry_student_filter_class.grid(row=2, column=1, sticky=W, padx=5)
 
         self.button_filter_students = Button(map_filter_frame, text="Filtruj")
-        self.button_filter_students.grid(row=3, column=0, columnspan=2, sticky=W)
+        self.button_filter_students.grid(row=3, column=0, sticky=W)
+        self.button_reset_student_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_student_filter.grid(row=3, column=1, sticky=W)
 
         return frame
 

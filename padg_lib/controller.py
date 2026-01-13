@@ -24,11 +24,13 @@ class MapController:
         self.view.button_delete_school.config(command=lambda: self.delete_school())
         self.view.button_edit_school.config(command=lambda: self.edit_school())
         self.view.button_show_on_map.config(command=self.show_schools_on_map)
+        self.view.button_reset_school_filter.config(command=self.reset_school_filters)
 
         self.view.button_add_employee.config(command=lambda: self.add_employee())
         self.view.button_delete_employee.config(command=lambda: self.delete_employee())
         self.view.button_edit_employee.config(command=lambda: self.edit_employee())
         self.view.button_filter_employees.config(command=self.filter_employees)
+        self.view.button_reset_employee_filter.config(command=self.reset_employee_filters)
 
         self.view.button_add_class.config(command=lambda: self.add_class())
         self.view.button_delete_class.config(command=lambda: self.delete_class())
@@ -38,6 +40,7 @@ class MapController:
         self.view.button_delete_student.config(command=lambda: self.delete_student())
         self.view.button_edit_student.config(command=lambda: self.edit_student())
         self.view.button_filter_students.config(command=self.filter_students)
+        self.view.button_reset_student_filter.config(command=self.reset_student_filters)
 
         self.view.combobox_school_for_student.bind("<<ComboboxSelected>>", self.update_class_combobox)
         self.view.entry_student_filter_school.bind("<<ComboboxSelected>>", self.update_student_filter_class_combobox)
@@ -90,6 +93,20 @@ class MapController:
 
     def draw_markers(self):
         pass
+
+    def reset_school_filters(self):
+        self.view.entry_map_city_filter.delete(0, END)
+        self.show_schools_on_map()
+
+    def reset_employee_filters(self):
+        self.view.entry_employee_filter_city.delete(0, END)
+        self.view.entry_employee_filter_school.set('')
+        self.filter_employees()
+
+    def reset_student_filters(self):
+        self.view.entry_student_filter_school.set('')
+        self.view.entry_student_filter_class.set('')
+        self.filter_students()
 
 
 ############SZKOŁY############
@@ -447,11 +464,8 @@ class MapController:
         self.view.combobox_class_for_student.set('')
 
     def delete_student(self):
-        try:
-            i = self.view.listbox_students.index(ACTIVE)
-            student_to_delete = self.displayed_students[i]
-        except (IndexError, ValueError):
-            return
+        i = self.view.listbox_students.index(ACTIVE)
+        student_to_delete = self.displayed_students[i]
 
         if student_to_delete in self.markers:
             self.markers[student_to_delete].delete()
@@ -462,11 +476,8 @@ class MapController:
         self.student_info()
 
     def edit_student(self):
-        try:
-            i = self.view.listbox_students.index(ACTIVE)
-            student = self.displayed_students[i]
-        except (IndexError, ValueError):
-            return
+        i = self.view.listbox_students.index(ACTIVE)
+        student = self.displayed_students[i]
         
         self.view.entry_student_name.delete(0, END)
         self.view.entry_student_address.delete(0, END)
