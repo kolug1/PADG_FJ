@@ -5,10 +5,10 @@ import tkintermapview
 class MapView:
     def __init__(self, root: Tk):
         self.root = root
-        self.root.geometry("1025x760")
+        self.root.geometry("1025x850")
         self.root.title("System zarządzania szkołami")
 
-        self.ramka_zarzadania = Frame(root)
+        self.ramka_zarzadania = Frame(root, height=200)
         self.ramka_mapa = Frame(root)
 
         self.ramka_zarzadania.grid(row=0, column=0, sticky=N)
@@ -88,15 +88,16 @@ class MapView:
         self.button_add_school.grid(row=4, column=0, columnspan=2)
 
         map_filter_frame = Frame(frame)
-        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+        map_filter_frame.grid(row=1, column=2, sticky=N, padx=10)
 
-        Label(map_filter_frame, text="Filtruj (lista i mapa) po mieście:").grid(row=0, column=0, sticky=W)
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        Label(map_filter_frame, text="Miasto:").grid(row=1, column=0, sticky=W)
         self.entry_map_city_filter = Entry(map_filter_frame)
-        self.entry_map_city_filter.grid(row=0, column=1, sticky=W, padx=5)
+        self.entry_map_city_filter.grid(row=1, column=1, sticky=W, padx=5)
         self.button_show_on_map = Button(map_filter_frame, text="Filtruj")
-        self.button_show_on_map.grid(row=0, column=2, sticky=W)
+        self.button_show_on_map.grid(row=2, column=0, sticky=W)
         self.button_reset_school_filter = Button(map_filter_frame, text="Resetuj")
-        self.button_reset_school_filter.grid(row=0, column=3, sticky=W, padx=5)
+        self.button_reset_school_filter.grid(row=2, column=1, sticky=W, padx=5)
 
         return frame
 
@@ -133,6 +134,11 @@ class MapView:
 
         self.button_add_class = Button(formularz, text="Dodaj Klasę")
         self.button_add_class.grid(row=3, column=0, columnspan=2)
+
+        # Placeholder to keep column consistent
+        placeholder = Frame(frame, width=200)
+        placeholder.grid(row=1, column=2)
+
         return frame
 
     def create_employee_frame(self, parent):
@@ -248,7 +254,7 @@ class MapView:
         self.button_add_student.grid(row=5, column=0, columnspan=2)
 
         map_filter_frame = Frame(frame)
-        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+        map_filter_frame.grid(row=1, column=2, sticky=N, padx=10)
 
         Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
         
@@ -294,7 +300,7 @@ class MapView:
 
     def create_map_frame(self):
         # RAMKA MAPY
-        self.map_widget = tkintermapview.TkinterMapView(self.ramka_mapa, width=1025, height=600)
+        self.map_widget = tkintermapview.TkinterMapView(self.ramka_mapa, width=1025, height=650)
         self.map_widget.set_position(52.19, 21.01)
         self.map_widget.set_zoom(11)
         self.map_widget.grid(row=0, column=0)
