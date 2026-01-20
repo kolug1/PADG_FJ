@@ -135,7 +135,6 @@ class MapView:
         self.button_add_class = Button(formularz, text="Dodaj Klasę")
         self.button_add_class.grid(row=3, column=0, columnspan=2)
 
-        # Placeholder to keep column consistent
         placeholder = Frame(frame, width=200)
         placeholder.grid(row=1, column=2)
 

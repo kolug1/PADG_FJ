@@ -91,8 +91,6 @@ class MapController:
                 self.view.listbox_schools.insert(idx, f"{school.name} {school.city} {school.street}")
 
 
-    def draw_markers(self):
-        pass
 
     def reset_school_filters(self):
         self.view.entry_map_city_filter.delete(0, END)
@@ -455,7 +453,7 @@ class MapController:
         address: str = self.view.entry_student_address.get()
         school_name: str = self.view.combobox_school_for_student.get()
         class_name: str = self.view.combobox_class_for_student.get()
-        student = Student(name=name, school_name=school_name, class_name=class_name, location=address)
+        student = Student(name=name, school_name=school_name, class_name=class_name, location=address, position='')
         self.students_data.append(student)
         self.student_info()
         self.view.entry_student_name.delete(0, END)
