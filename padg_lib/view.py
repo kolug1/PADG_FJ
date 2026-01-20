@@ -1,15 +1,14 @@
 from tkinter import *
 import tkinter.ttk as ttk
 import tkintermapview
-from padg_lib.model import schools
 
 class MapView:
     def __init__(self, root: Tk):
         self.root = root
-        self.root.geometry("1025x760")
+        self.root.geometry("1025x850")
         self.root.title("System zarządzania szkołami")
 
-        self.ramka_zarzadania = Frame(root)
+        self.ramka_zarzadania = Frame(root, height=200)
         self.ramka_mapa = Frame(root)
 
         self.ramka_zarzadania.grid(row=0, column=0, sticky=N)
@@ -89,13 +88,16 @@ class MapView:
         self.button_add_school.grid(row=4, column=0, columnspan=2)
 
         map_filter_frame = Frame(frame)
-        map_filter_frame.grid(row=6, column=0, columnspan=2, sticky="ew")
+        map_filter_frame.grid(row=1, column=2, sticky=N, padx=10)
 
-        Label(map_filter_frame, text="Filtruj mapę po mieście:").grid(row=0, column=0, sticky=W)
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        Label(map_filter_frame, text="Miasto:").grid(row=1, column=0, sticky=W)
         self.entry_map_city_filter = Entry(map_filter_frame)
-        self.entry_map_city_filter.grid(row=0, column=1, sticky=W, padx=5)
-        self.button_show_on_map = Button(map_filter_frame, text="Pokaż na mapie")
-        self.button_show_on_map.grid(row=0, column=2, sticky=W)
+        self.entry_map_city_filter.grid(row=1, column=1, sticky=W, padx=5)
+        self.button_show_on_map = Button(map_filter_frame, text="Filtruj")
+        self.button_show_on_map.grid(row=2, column=0, sticky=W)
+        self.button_reset_school_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_school_filter.grid(row=2, column=1, sticky=W, padx=5)
 
         return frame
 
@@ -132,6 +134,10 @@ class MapView:
 
         self.button_add_class = Button(formularz, text="Dodaj Klasę")
         self.button_add_class.grid(row=3, column=0, columnspan=2)
+
+        placeholder = Frame(frame, width=200)
+        placeholder.grid(row=1, column=2)
+
         return frame
 
     def create_employee_frame(self, parent):
@@ -162,10 +168,6 @@ class MapView:
         self.entry_employee_street = Entry(formularz)
         self.entry_employee_street.grid(row=3, column=1)
 
-        Label(formularz, text="Stanowisko:").grid(row=4, column=0, sticky=W)
-        self.entry_employee_position = Entry(formularz)
-        self.entry_employee_position.grid(row=4, column=1)
-
         self.selected_school = StringVar()
         Label(formularz, text="Szkoła:").grid(row=5, column=0, sticky=W)
         self.entry_employee_school = ttk.Combobox(
@@ -178,6 +180,29 @@ class MapView:
 
         self.button_add_employee = Button(formularz, text="Dodaj Pracownika")
         self.button_add_employee.grid(row=6, column=0, columnspan=2)
+
+        map_filter_frame = Frame(frame)
+        map_filter_frame.grid(row=1, column=2, sticky=N, columnspan=3, padx=10)
+
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        
+        Label(map_filter_frame, text="Miasto:").grid(row=1, column=0, sticky=W)
+        self.entry_employee_filter_city = Entry(map_filter_frame)
+        self.entry_employee_filter_city.grid(row=1, column=1, sticky=W, padx=5)
+        
+        Label(map_filter_frame, text="Szkoła:").grid(row=2, column=0, sticky=W)
+        self.entry_employee_filter_school = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="normal"
+        )
+        self.entry_employee_filter_school.grid(row=2, column=1, sticky=W, padx=5)
+
+        self.button_filter_employees = Button(map_filter_frame, text="Filtruj")
+        self.button_filter_employees.grid(row=3, column=0, sticky=W)
+        self.button_reset_employee_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_employee_filter.grid(row=3, column=1, sticky=W)
+
         return frame
 
     def create_student_frame(self, parent):
@@ -226,6 +251,33 @@ class MapView:
 
         self.button_add_student = Button(formularz, text="Dodaj Ucznia")
         self.button_add_student.grid(row=5, column=0, columnspan=2)
+
+        map_filter_frame = Frame(frame)
+        map_filter_frame.grid(row=1, column=2, sticky=N, padx=10)
+
+        Label(map_filter_frame, text="Filtruj (lista i mapa):").grid(row=0, column=0, sticky=W)
+        
+        Label(map_filter_frame, text="Szkoła:").grid(row=1, column=0, sticky=W)
+        self.entry_student_filter_school = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="readonly"
+        )
+        self.entry_student_filter_school.grid(row=1, column=1, sticky=W, padx=5)
+
+        Label(map_filter_frame, text="Klasa:").grid(row=2, column=0, sticky=W)
+        self.entry_student_filter_class = ttk.Combobox(
+            map_filter_frame,
+            values=[],
+            state="readonly"
+        )
+        self.entry_student_filter_class.grid(row=2, column=1, sticky=W, padx=5)
+
+        self.button_filter_students = Button(map_filter_frame, text="Filtruj")
+        self.button_filter_students.grid(row=3, column=0, sticky=W)
+        self.button_reset_student_filter = Button(map_filter_frame, text="Resetuj")
+        self.button_reset_student_filter.grid(row=3, column=1, sticky=W)
+
         return frame
 
 
@@ -247,7 +299,7 @@ class MapView:
 
     def create_map_frame(self):
         # RAMKA MAPY
-        self.map_widget = tkintermapview.TkinterMapView(self.ramka_mapa, width=1025, height=600)
+        self.map_widget = tkintermapview.TkinterMapView(self.ramka_mapa, width=1025, height=650)
         self.map_widget.set_position(52.19, 21.01)
         self.map_widget.set_zoom(11)
         self.map_widget.grid(row=0, column=0)

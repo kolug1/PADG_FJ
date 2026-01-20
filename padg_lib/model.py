@@ -34,12 +34,11 @@ class Class:
         self.school_name = school_name
 
 class Employee:
-    def __init__(self, name: str, city: str, street: str, school_name: str, position: str):
+    def __init__(self, name: str, city: str, street: str, school_name: str):
         self.name = name
         self.city = city
         self.street = street
         self.school_name = school_name
-        self.position = position
         address: str = f"{city}, {street}"
         self.coords = get_coordinates(address)
 
